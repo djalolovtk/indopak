@@ -36,7 +36,7 @@ fi
 cd $tx
 chmod +x indopak
 yes | cp -rf indopak $txz
-fi
+
 cd $down
 if [[ -d "pak" ]]
 then
