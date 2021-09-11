@@ -1,0 +1,864 @@
+down=$EXTERNAL_STORAGE/Download
+dpak=$EXTERNAL_STORAGE/Download/pak
+opak=$EXTERNAL_STORAGE/Android/data/com.tencent.ig/files/UE4Game/ShadowTrackerExtra/ShadowTrackerExtra/Saved/Paks
+quickbms=$PREFIX/share/quickbms
+quickbms_dir=$PREFIX/share/quickbms
+sd=$EXTERNAL_STORAGE/Download
+dobb=$EXTERNAL_STORAGE/Download/obb
+tx=$HOME/indopak
+rx=$HOME
+
+NOCOLOR='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+LIGHTGRAY='\033[0;37m'
+DARKGRAY='\033[1;30m'
+LIGHTRED='\033[1;31m'
+LIGHTGREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+LIGHTBLUE='\033[1;34m'
+LIGHTPURPLE='\033[1;35m'
+LIGHTCYAN='\033[1;36m'
+WHITE='\033[1;37m'
+clear
+
+#=========================
+
+
+#=========================
+function quickbms_check {
+printf "\n"
+
+FILE=$quickbms_dir/quickbms
+if [ -f "$FILE" ]; then
+echo -e "${LIGHTGREEN}Tools is Checking Package....${NOCOLOR}"
+else
+bms_checker2
+fi
+}
+
+#=========================
+function bms_checker2 {
+printf "\n"
+echo -e "${YELLOW}Checking required program ini another folder..${NOCOLOR}"
+cd $tx
+FILE=quickbms
+if [ -f "$FILE" ]; then
+Bash cache
+quickbms_check
+else
+echo -e "${RED}PROGRAM NOT FOUND.${NOCOLOR}"
+quickbms_install
+fi
+}
+
+#=========================
+function nextinstaller {
+echo "Please wait .."
+echo "unpacking data"
+cd $tx
+unzip -qq quickbms_linux.zip
+sleep 1
+rm -rf $PREFIX/share/quickbms
+sleep 1
+echo "improving"
+mkdir $PREFIX/share/quickbms
+sleep 1
+chmod +x quickbms_4gb_files
+yes | cp -rf quickbms_4gb_files $quickbms_dir
+chmod +x quickbms
+yes | cp -rf quickbms $quickbms_dir
+chmod +x etc/pubg.bms indopak
+sleep 1
+rm -rf quickbms*
+echo done
+sleep 1
+quickbms_check
+}
+
+#=========================
+function testbmsm {
+echo "checking file .Zip"
+FILE=$sd/quickbms_linux.zip
+if [ -f "$FILE" ]; then
+echo " file founded"
+cp -rf $sd/quickbms_linux.zip $tx
+nextinstaller
+else
+clear
+echo -e "${RED}THE FILE IS NOT FOUND${NOCOLOR}"
+quickbms_manual
+fi
+}
+
+#=========================
+function testbmsauto {
+echo "checking downloaded program"
+sleep 1
+FILE=quickbms_linux.zip
+if [ -f "$FILE" ]; then
+echo " file founded"
+nextinstaller
+else
+clear
+echo -e "${RED}THE FILE IS NOT FOUND${NOCOLOR}"
+quickbms_install
+fi
+}
+
+#=========================
+function quickbms_manual {
+clear
+echo ""
+echo "http://aluigi.altervista.org/papers/quickbms_linux.zip"
+echo -e "${RED} first download file from link above ${NOCOLOR}"
+echo -e "${GREEN}after download that paste the file in download folder ${NOCOLOR}"
+cd $sd
+prompt="Please select a file quick bms :"
+options=( $(find *.zip) )
+PS3="$prompt "
+select bms in "${options[@]}" "Quit" ; do
+if (( REPLY == 1 + ${#options[@]} )) ; then
+quickbms_install
+elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
+echo  "You picked $bms which is file quickbms file"
+testbmsm
+else
+echo "Invalid option. Try another one."
+fi
+done
+cd $tx
+}
+
+#=========================
+function quickbms_auto {
+echo "AUTO INSTALLATION METHOD USED"
+echo "Please WAIT"
+echo "this process depends on your signal"
+echo " if it take to long please press CTRL + C"
+sleep 2
+echo "starting"
+cd $tx
+wget http://aluigi.altervista.org/papers/quickbms_linux.zip
+echo " checking..."
+testbmsauto
+}
+
+#=========================
+function quickbms_install {
+printf "\n"
+echo -e "CHOOSE PROGRAM INSTALLER METHOD"
+echo "MAKE SURE YOU HAVE GREAT CONNECTION WHEN CHOOSE AUTO"
+echo "because the process Will be taking longer"
+PS3='Please enter your CHOOSE: '
+options=("Auto" "Manual")
+select pategk in "${options[@]}"
+do
+case $pategk in
+"Auto")
+quickbms_auto
+;;
+"Manual")
+quickbms_manual
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+
+#=========================
+printf "\n"
+packages=("wget" "zip" "unzip" "curl" "x11-repo" "qemu-system-i386" "qemu-user-i386" "neofetch")
+for pkg in ${packages[@]}; do
+is_pkg_installed=$(dpkg-query -W --showformat='${Status}\n' ${pkg} | grep "install ok installed")
+if [ "${is_pkg_installed}" != "install ok installed" ]
+then
+[ "" = "${is_pkg_installed}" ];
+echo -e "${RED}There's any packages NOT installed. Setting up packages.${NOCOLOR}"
+pkg install ${pkg} -y
+fi
+done
+quickbms_check
+
+if [[ ! -d "$tx" ]]
+then
+mkdir $tx &>/dev/null
+cd $tx
+else
+cd $tx
+fi
+cd $tx
+if [[ ! -d "$tx/output" ]]
+then
+mkdir $tx/output &>/dev/null
+fi
+cd $down
+if [[ -d "pak" ]]
+then
+mkdir $dpak &>/dev/null
+fi
+
+#=========================
+function cache {
+echo -e "
+mv $opt $dpak &> /dev/null
+cd $tx
+if [[ -d "$tx/output" ]]
+then
+rm -rf $tx/output
+rm $tx/cache
+else
+cp -rf $down/output $tx &> /dev/null
+rm -rf $tx/output
+rm $tx/cache
+fi
+" >$tx/cache
+chmod +x $tx/cache
+}
+
+#=========================
+function erfix {
+if [[ -f "cache" ]]
+then
+cd $tx
+bash $tx/cache &> /dev/null
+echo -e "${YELLOW}Error FIXED ${NOCOLOR}"
+rm -rf $tx/output
+pakfitures
+exit
+else
+cd $tx
+for fax in *pak; do
+if [ -f "$fax" ]; then
+mv -f $fax $down/pak/$fax
+echo -e "${YELLOW}Error FIXED ${NOCOLOR}"
+rm -rf $tx/output
+pakfitures
+exit
+else
+echo -e "${LIGHTGREEN}Error NOT Found ${NOCOLOR}"
+pakfitures
+exit
+fi
+done
+fi
+}
+
+
+#=====================
+function src {
+cd $tx
+if [[ ! -f "$tx/output/00000000.dat" ]]
+then
+cd $tx
+echo -e "${YELLOW}NO *dat Files"
+#echo -e "Tidak Ada file *dat${NOCOLOR}"
+bash $tx/cache &> /dev/null
+pakfitures
+exit
+fi
+
+
+#=========================
+function cotr {
+cd $tx
+printf "\n"
+echo -e ""
+#echo -e "${YELLOW} Starting Unpacking..... ${NOCOLOR}"
+grep -Ril "$tfil" $tx/output > $tx/Ril.ini
+for i in $(cat Ril.ini); do echo "cp -rf $i $down/output"; done >> $tx/Ril
+if [[ ! -d "$down/output" ]]
+then
+mkdir $down/output
+fi
+chmod +x $tx/Ril
+bash Ril
+#echo -e "${LIGHTGREEN}DONE ${NOCOLOR}"
+rm -rf $tx/Ril
+rm -rf $tx/Ril.ini
+repack
+src
+}
+
+
+#=====================
+cd $tx
+if [[ -d "output" ]]
+then
+printf "\n"
+echo -e "${LIGHTPURPLE} Functions Mode PAKs ${NOCOLOR}"
+PS3='Search OR Type TEXT : '
+options=("CVars"
+"Copy ALL" 
+"ClearLogCache"
+"FINISH")
+select rcs in "${options[@]}"
+do
+case $rcs in
+
+#=============================
+"CVars")
+echo -e "${YELLOW}Starting Unpacking..... ..."
+echo -e "${LIGHTGREEN}"
+if grep -Ril "CVars" output
+then
+tfil=CVars
+echo -e "${NOCOLOR}"
+cotr
+else
+printf "\n"
+echo -e "${LIGHTRED}No Anything files  ${NOCOLOR}"
+fi
+
+#========================
+;;
+"Search 'PUBG'")
+echo -e "${LIGHTGREEN}"
+if grep -Ril "PUBG" output
+then
+tfil='PUBG'
+echo -e "${NOCOLOR}"
+ 
+cotr
+else
+printf "\n"
+echo -e "${YELLOW}Theres NO *dat files has been included 'PUBG' you can to find it again with different word ${NOCOLOR}"
+echo -e "KATA 'PUBG' tidak ditemukan disemua file *dat, ulangi ketik dg KATA yg lain ${NOCOLOR}"
+fi
+
+#=======================
+;;
+"Search 'Quality'")
+echo -e "${LIGHTGREEN}"
+if grep -Ril "Quality" output
+then
+tfil='Quality'
+echo -e "${NOCOLOR}"
+cotr
+else
+printf "\n"
+echo -e "${YELLOW}Theres NO *dat files has been included 'Quality' you can to find it again with different word "
+echo -e "KATA 'Quality' tidak ditemukan disemua file *dat, ulangi ketik dg KATA yg lain ${NOCOLOR}"
+fi
+;;
+"DEL output")
+echo -e "${YELLOW}"
+if [[ -d "$down/output" ]]
+then
+rm -rf $down/output
+echo -e "${NOCOLOR}"
+ 
+printf "\n"
+echo -e "${YELLOW}"
+echo -e "'output' Directory has been DELETED"
+echo -e "'Folder 'output' telah dihapus ${NOCOLOR}"
+src
+else
+echo -e "There is NO 'output' directory"
+echo -e "Tidak ada folder 'output' ${NOCOLOR}"
+src
+fi
+;;
+"ClearLogCache")
+cd $tx
+erfix
+;;
+"Copy ALL")
+echo -e "${YELLOW}Starting Unpacking.....  ${NOCOLOR}"
+cd $tx
+if [[ ! -d "output" ]]
+then
+mkdir $down/output
+fi
+cp -rf output $down
+rm -rf Ril.ini
+printf "\n"
+echo -e "${LIGHTGREEN}DONE ${NOCOLOR}"
+ 
+cd $tx
+pakfitures
+exit
+;;
+"FINISH")
+cd $tx
+rm -rf Ril.ini
+cd $tx
+pakfitures
+exit
+;;
+*)
+echo -e "${YELLOW}Starting Engine..."
+echo -e "${LIGHTGREEN}"
+if grep -Ril $REPLY output
+then
+tfil=$REPLY
+echo -e "${NOCOLOR}"
+ 
+cotr
+else
+printf "\n"
+echo -e "${YELLOW}Theres NO *dat files has been included '$REPLY' , You can to find it again with different word"
+echo -e "KATA '$REPLY' tidak ditemukan disemua file *dat, ulangi ketik dg KATA yg lain ${NOCOLOR}"
+fi
+;;
+esac
+done
+else
+cd $tx
+fi
+}
+mvpakout () {
+cd $dpak
+mv $opt $tx &> /dev/null
+cd $tx
+pak32un
+rm -rf $tx/cache
+cache
+sleep 3
+src
+}
+mvpakin () {
+rm -rf $tx/output
+mkdir $tx/output
+cp -rf $down/output $tx &> /dev/null
+rm -rf $down/output
+cd $tx
+pakc32
+echo -e "Repacking is Complete.ok !! "
+game
+}
+function pakc64 {
+ qemu-i386 $PREFIX/share/quickbms/quickbms_4gb_files -w -r -r -r etc/pubg.bms $opt output
+    sleep 1
+bash $tx/cache
+echo -e "Please Select Any Mode..!! "
+game
+exit
+}
+function pakc32 {
+qemu-i386 $PREFIX/share/quickbms/quickbms -w -r etc/pubg.bms $opt output
+sleep 1
+bash $tx/cache
+exit
+}
+function pubgbitre {
+printf "\n"
+echo -e "${YELLOW} Repacking Files to ..??? ${NOCOLOR}"
+PS3='Repack to: '
+options=("32bit" "64bit" "CANCEL")
+select bit in "${options[@]}"
+do
+case $bit in
+"32bit")
+pakc32
+break
+;;
+"64bit")
+pakc64
+modeoptions
+break
+;;
+"CANCEL")
+cd $tx
+erfix
+exit
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+function pak32un {
+qemu-i386 $PREFIX/share/quickbms/quickbms etc/pubg.bms $opt output
+rm -rf $down/output
+}
+function pak64un {
+qemu-i386 $PREFIX/share/quickbms/quickbms_4gb_files etc/pubg.bms $opt output
+rm -rf $down/output
+}
+function unpacking {
+printf "\n"
+echo -e "${YELLOW} Unpacking Files to ..??? ${NOCOLOR}"
+PS3='Unpack to: '
+options=("32bit" "64bit" "CANCEL")
+select bit in "${options[@]}"
+do
+case $bit in
+"32bit")
+echo -e "${YELLOW}Starting Unpack...${NOCOLOR}"
+pak32un
+break
+;;
+"64bit")
+echo -e "${YELLOW}Starting Unpack...${NOCOLOR}"
+pak64un
+break
+;;
+"CANCEL")
+cd $tx
+erfix
+exit
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+
+
+function unpack {
+printf "\n"
+echo -e "${YELLOW}         ====================================="
+echo -e "${LIGHTRED}                   INDO TOOLS ${WHITE}OBB PAKS ${NOCOLOR}"
+echo -e "${YELLOW}         =====================================${NOCOLOR}"
+printf "\n"
+echo -e " ${LIGHTGREEN}Ditemukan File ini di Storage/Download/pak : ${NOCOLOR}"
+cd $tx
+if [[ ! -f "$tx/output/00000000.dat" ]]
+then
+cd $dpak
+echo -e " "
+prompt="Select a file to UNPACK : "
+options=( $(find *.pak) )
+PS3="$prompt "
+select opt in "${options[@]}" "CANCEL" ; do
+if (( REPLY == 1 + ${#options[@]} )) ; then
+cd $tx
+pakfitures
+exit
+elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
+#echo  "You picked $opt which is file $REPLY"
+mvpakout
+break
+else
+echo "Invalid option. Try another one."
+fi
+done
+else
+printf "\n"
+echo -e "${LIGHTRED}There are *dat files ready to REPACK ! ${NOCOLOR}"
+#echo -e "${LIGHTGREEN}Please ${NOCOLOR}REPACK ${LIGHTGREEN}the file OR choose ${NOCOLOR}Error FIX ${LIGHTGREEN}to clear *dat cache ${NOCOLOR}"
+sleep 3
+cd $tx
+pakfitures
+fi
+}
+
+
+function repack {
+printf "\n"
+cd $tx
+if [[ -f "$tx/output/00000000.dat" ]]
+then
+prompt="Select a file to REPACK : "
+options=( $(find *.pak) )
+PS3="$prompt "
+select opt in "${options[@]}" "CANCEL" ; do
+if (( REPLY == 1 + ${#options[@]} )) ; then
+cd $tx
+pakfitures
+exit
+elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
+#echo  "You picked $opt which is file $REPLY"
+#echo -e "${YELLOW}Starting Engine...${NOCOLOR}"
+mvpakin
+break
+else
+echo "Invalid option. Try another one."
+fi
+done
+else
+printf "\n"
+echo -e "${LIGHTRED}NO UNPACKED File ! "
+echo -e "${LIGHTGREEN}Please ${NOCOLOR}UNPACK ${LIGHTGREEN}any PAK file OR Choose ${NOCOLOR}Error FIX ${LIGHTGREEN}to clear *dat cache ${NOCOLOR}"
+sleep 2
+cd $tx
+pakfitures
+fi
+}
+function pakfitures {
+printf "\n"
+echo " --------------------+++++++------------------------- "
+echo -e "                     ${LIGHTCYAN}Mode PAK FITURE :${NOCOLOR}"
+echo " --------------------+++++++------------------------- "
+PS3='Fiture Number : '
+options=("UnpackPAK" 
+"RepackPAK" 
+"Back to Mode Options" 
+"EXIT")
+select dadi in "${options[@]}"
+do
+case $dadi in
+"UnpackPAK")
+unpack
+;;
+"RepackPAK")
+repack
+;;
+"Search Text")
+cd $tx
+if [[ -f "$tx/output/00000000.dat" ]]
+then
+src
+else
+printf "\n"
+echo -e "${LIGHTRED}NO UNPACKED file${NOCOLOR}"
+#echo -e "${LIGHTGREEN}Please ${NOCOLOR}UNPACK ${LIGHTGREEN}any PAK file ${NOCOLOR}"
+sleep 3
+cd $tx
+pakfitures
+fi
+;;
+"ERROR FIX")
+cd $tx
+erfix
+exit
+;;
+"Back to Mode Options")
+modeoptions
+;;
+"EXIT")
+exit
+printf "\n"
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+if [[ ! -d "$dobb" ]]
+then
+echo ""
+mkdir $dobb
+fi
+
+
+function sizeupdown {
+cd $dobb
+obbsize=$(cat $tx/sizeobb.ini)
+count=$(printf $(du -b *.obb.zip))
+if [ $count -lt $obbsize ]
+then
+while [  $count -lt $obbsize ]
+do
+truncate -s+1 *.zip
+printf "$count\n"
+let count=count+1
+done
+else
+while [  $count -gt $obbsize ]
+do
+truncate -s-1 *.zip
+printf "$count\n"
+let count=count-1
+done
+fi
+}
+
+
+function fnsh {
+cd $dobb
+obbsize=$(cat $tx/sizeobb.ini)
+count=$(printf $(du -b *.zip))
+if [ $count -lt $obbsize ]
+then
+while [  $count -lt $obbsize ]
+do
+truncate -s+100 *.zip
+printf "$count\n"
+let count=count+100
+done
+sizeupdown
+else
+while [  $count -gt $obbsize ]
+do
+truncate -s-100 *.zip
+printf "$count\n"
+let count=count-100
+exit
+done
+sizeupdown
+fi
+}
+
+
+function repackobb {
+printf "\n"
+echo -e "${YELLOW}Starting RePacking OBB Files. ${NOCOLOR}"
+cd $dobb
+mv $tx/*zip $dobb
+obbnm=$(find *zip)
+obbdir=$(printf $(find * -maxdepth 0 -type d))
+zip -u -0 $obbnm
+fnsh
+printf "\n"
+ 
+printf "\n"
+cd $dobb
+obbsize=$(cat $tx/sizeobb.ini)
+four=$(printf $(du -b *zip))
+five=$(expr $obbsize - $four)
+six=$(expr $five / 8)
+mv $(for file in *.zip; do basename $file .ig.obb.zip; done;).ig.obb.zip $(for file in *zip; do basename $file .ig.obb.zip; done;).ig.obb
+rm -rf $tx/sizeobb.ini
+rm -rf $obbdir
+echo -e "${LIGHTGREEN}FINISH ${NOCOLOR}"
+printf "\n"
+modeoptions
+}
+function unpackobb {
+printf "\n"
+echo -e "${YELLOW}Starting UnPacking OBB files... ${NOCOLOR}"
+cd $dobb
+for f in *obb; do mv $f $f.zip; done
+echo $(printf $(du -b *.obb.zip)) > $tx/sizeobb.ini
+printf "\n"
+ 
+printf "\n"
+unzip *.obb.zip
+sleep 1
+mv *.obb.zip $tx
+ 
+printf "\n"
+printf "\n"
+echo -e "${LIGHTGREEN}DONE.  ${NOCOLOR}"
+printf "\n"
+echo ""
+modeoptions
+printf "\n"
+exit
+}
+function rstall {
+printf "\n"
+cd $tx
+if [[ -f "sizeobb.ini" ]]
+then
+if [[ -f $(find *".obb.zip") ]]
+then
+rm -rf *.obb.zip
+fi
+rm -rf $dobb
+rm -rf sizeobb.ini
+printf "\n"
+echo -e "${YELLOW}CLEAR CACHE ${NOCOLOR}"
+else
+printf "\n"
+echo -e "${LIGHTGREEN}NO CACHE BUG ${NOCOLOR}"
+fi
+ 
+bash vipgamer
+}
+function programhead {
+printf "\n"
+cd $dobb
+echo " --------------------+++++++------------------------- "
+echo -e "                    ${LIGHTPURPLE} Mode OBB FITURE : ${NOCOLOR}"
+echo " --------------------+++++++------------------------- "
+PS3='Fiture Number : '
+options=("UnpackOBB" 
+"RepackOBB" 
+"Back to MODE Options" 
+"EXIT")
+select obadi in "${options[@]}"
+do
+case $obadi in
+"UnpackOBB")
+echo -e "${YELLOW}Starting Engine Unpack OBB Files..${NOCOLOR}"
+if [[ "$(find *obb)" == *"obb" ]] &>/dev/null
+then
+unpackobb
+else
+printf "\n"
+echo -e "${LIGHTRED}PUT THE OBB FILE INTO Download/obb"
+printf "\n"
+echo -e "LETAKKAN FILE OBB KEDALAM FOLDER Download/obb ${NOCOLOR}"
+printf "\n"
+modeoptions
+printf "\n"
+fi
+;;
+"RepackOBB")
+echo -e "${YELLOW}Starting Engine Repack OBB Files..${NOCOLOR}"
+repackobb
+;;
+"Back to MODE Options")
+modeoptions
+;;
+"EXIT")
+exit
+printf "\n"
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+
+function modeoptions {
+printf "\n"
+cd $dobb
+echo " --------------------+++++++------------------------- "
+echo -e "                     ${YELLOW} MODE OPTIONS : ${NOCOLOR}"
+echo " --------------------+++++++------------------------- "
+PS3='Fiture Number : '
+options=("OBB Mode" "PAK Mode" "GAME Mode" "EXIT")
+select obadi in "${options[@]}"
+do
+case $obadi in
+"OBB Mode")
+programhead
+;;
+"PAK Mode")
+pakfitures
+;;
+"GAME Mode")
+game
+;;
+"EXIT")
+exit
+printf "\n"
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+
+function game {
+cd $tx
+echo -e " "
+PS3=' Select Number : '
+options=("Send Pak Mod to com.tencent.ig" "RESET GUEST" "RUN GAME" "EXIT")
+select obadi in "${options[@]}"
+do
+case $obadi in
+"RESET GUEST")
+su -c sh resetguest.sh
+clear
+echo -e "${LIGHTGREEN}Files Pak Mod is Ready ${NOCOLOR} "
+game
+;;
+"RUN GAME")
+su -c sh loginpubg.sh
+clear
+unpack
+;;
+"Send Pak Mod to com.tencent.ig")
+su -c cp -r /storage/emulated/0/Download/pak/*.pak /storage/emulated/0/Android/data/com.tencent.ig/files/UE4Game/ShadowTrackerExtra/ShadowTrackerExtra/Saved/Paks
+echo -e "${LIGHTGREEN}Files Pak Mod is Ready ${NOCOLOR} "
+game
+;;
+"EXIT")
+exit
+printf "\n"
+;;
+*) echo "invalid option $REPLY";;
+esac
+done
+}
+
+apt update && apt upgrade
+pkg update && pkg upgrade
+echo -e " "
+sleep3
+clear
+unpack
