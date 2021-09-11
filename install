@@ -45,6 +45,7 @@ fi
 
 function install {
 echo "Please wait .."
+echo " "
 sleep 2
 cd $tx
 sleep 1
@@ -62,13 +63,19 @@ printf "\n"
 FILE=$quickbms_dir/quickbms
 if [ -f "$FILE" ]; then
 echo -e "${LIGHTGREEN}Tools is Checking Package....${NOCOLOR}"
+sleep 5
 else
 exit
 fi
 }
 
 install
+clear
+echo " ======================= "
 echo -e " ${LIGHTGREEN}Install indopak selesai "
-echo -e " ${YELLOW}silahkan jalankan TOOLS anda ${NOCOLOR}"
-echo -e " Dengan mengetikan ${LIGHTGREEN}indopak ${NOCOLOR}(huruf kecil semua ) "
+echo " ======================= "
+echo " "
+echo -e " ${YELLOW}silahkan ketik exit dan jalankan TERMUX anda ${NOCOLOR}"
+echo " "
+echo -e " kemudian mengetikan ${LIGHTGREEN}indopak ${NOCOLOR}(huruf kecil semua ) "
 exit
