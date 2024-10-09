@@ -1,5 +1,5 @@
-down=$EXTERNAL_STORAGE/Download/pak
-dpak=$EXTERNAL_STORAGE/Download
+down=$EXTERNAL_STORAGE/Download
+dpak=$EXTERNAL_STORAGE/Download/pak
 quickbms=$PREFIX/share/quickbms
 quickbms_dir=$PREFIX/share/quickbms
 tx=$HOME/indopak
