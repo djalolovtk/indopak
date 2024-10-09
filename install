@@ -35,6 +35,7 @@ cd $dpak
 if [[ -d "pak" ]]
 then
 mkdir $dpak &>/dev/null
+mkdir $down &>/dev/null
 fi
 
 function install {
