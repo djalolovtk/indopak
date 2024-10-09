@@ -1,5 +1,3 @@
-
-
 down=$EXTERNAL_STORAGE/Download
 dpak=$EXTERNAL_STORAGE/Download/pak
 quickbms=$PREFIX/share/quickbms
@@ -28,6 +26,10 @@ mkdir $tx/etc &>/dev/null
 mkdir $tx/Logs &>/dev/null
 chmod +x pubg.bms 
 mv pubg.bms $tx/etc
+chmod +x FileUseTime.txt
+mv FileUseTime.txt $tx/Logs
+chmod +x ShadowTrackerExtra.log
+mv ShadowTrackerExtra.log $tx/Logs
 fi
 cd $tx
 chmod +x indopak
