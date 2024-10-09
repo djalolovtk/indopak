@@ -1,91 +1,74 @@
-#!/bin/bash
+down=$EXTERNAL_STORAGE/Download
+dpak=$EXTERNAL_STORAGE/Download/pak
+quickbms=$PREFIX/share/quickbms
+quickbms_dir=$PREFIX/share/quickbms
+tx=$HOME/indopak
+txz=$PREFIX/bin
 
-# Define paths
-down="$EXTERNAL_STORAGE/Download"
-dpak="$EXTERNAL_STORAGE/Download"
-quickbms_dir="$PREFIX/share/quickbms"
-tx="$HOME/indopak"
-txz="$PREFIX/bin"
-pak_dir="$dpak/pak"
-
-# Color definitions
 NOCOLOR='\033[0m'
 LIGHTGREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 
-# Clear the screen
+
 clear
-
-# Check for required environment variables
-if [ -z "$EXTERNAL_STORAGE" ] || [ -z "$PREFIX" ]; then
-    echo -e "${YELLOW}Required environment variables are not set!${NOCOLOR}"
-    exit 1
-fi
-
-# Create necessary directories
-mkdir -p "$tx/output" "$tx/etc" "$pak_dir" "$down" "$dpak"
-
-# Move pubg.bms to the etc directory if it exists
-if [ -f "pubg.bms" ]; then
-    chmod +x pubg.bms || { echo -e "${YELLOW}Failed to set permissions for pubg.bms.${NOCOLOR}"; exit 1; }
-    mv pubg.bms "$tx/etc/" || { echo -e "${YELLOW}Failed to move pubg.bms.${NOCOLOR}"; exit 1; }
+if [[ ! -d "$tx" ]]
+then
+mkdir $tx &>/dev/null
+cd $tx
 else
-    echo -e "${YELLOW}File pubg.bms not found!${NOCOLOR}"
+cd $tx
+fi
+cd $tx
+if [[ ! -d "$tx/output" ]]
+then
+mkdir $tx/output &>/dev/null
+mkdir $tx/etc &>/dev/null
+chmod +x pubg.bms 
+mv pubg.bms $tx/etc
+fi
+cd $tx
+chmod +x indopak
+yes | cp -rf indopak $txz
+
+cd $down
+if [[ -d "pak" ]]
+then
+mkdir $dpak &>/dev/null
 fi
 
-# Check for the indopak script
-if [ -f "indopak" ]; then
-    chmod +x indopak || { echo -e "${YELLOW}Failed to set permissions for indopak.${NOCOLOR}"; exit 1; }
-    cp -rf indopak "$txz/" || { echo -e "${YELLOW}Failed to copy indopak.${NOCOLOR}"; exit 1; }
+function install {
+echo "Please wait .."
+echo " "
+sleep 2
+cd $tx
+sleep 1
+rm -rf $PREFIX/share/quickbms
+sleep 1
+mkdir $PREFIX/share/quickbms
+sleep 1
+chmod +x quickbms_4gb_files
+yes | cp -rf quickbms_4gb_files $quickbms_dir
+chmod +x quickbms
+yes | cp -rf quickbms $quickbms_dir
+chmod +x etc/pubg.bms indopak
+sleep 1
+printf "\n"
+FILE=$quickbms_dir/quickbms
+if [ -f "$FILE" ]; then
+echo -e "${LIGHTGREEN}Tools is Checking Package....${NOCOLOR}"
+sleep 5
 else
-    echo -e "${YELLOW}File indopak not found! Please ensure it exists.${NOCOLOR}"
-    exit 1
+exit
 fi
-
-# Install function
-install() {
-    echo "Please wait .."
-    sleep 2
-
-    # Recreate the quickbms directory
-    rm -rf "$quickbms_dir"
-    mkdir -p "$quickbms_dir"
-
-    # Copy necessary files to quickbms_dir
-    for file in quickbms_4gb_files quickbms; do
-        if [ -f "$file" ]; then
-            chmod +x "$file" || { echo -e "${YELLOW}Failed to set permissions for $file.${NOCOLOR}"; exit 1; }
-            cp -rf "$file" "$quickbms_dir/" || { echo -e "${YELLOW}Failed to copy $file.${NOCOLOR}"; exit 1; }
-        else
-            echo -e "${YELLOW}File $file not found! Please check the file's existence.${NOCOLOR}"
-            exit 1
-        fi
-    done
-
-    # Set permissions for pubg.bms and indopak
-    chmod +x "$tx/etc/pubg.bms" "$tx/indopak" || { echo -e "${YELLOW}Failed to set permissions.${NOCOLOR}"; exit 1; }
-
-    printf "\n"
-    FILE="$quickbms_dir/quickbms"
-    if [ -f "$FILE" ]; then
-        echo -e "${LIGHTGREEN}Tools are checking the package....${NOCOLOR}"
-        sleep 5
-    else
-        echo -e "${YELLOW}QuickBMS installation failed! Please check the files.${NOCOLOR}"
-        exit 1
-    fi
 }
 
-# Run the install function
 install
-
-# Final message
 clear
 echo " ======================= "
-echo -e " ${LIGHTGREEN}Installation of indopak completed. ${NOCOLOR} "
+echo -e " ${LIGHTGREEN}Install indopak selesai "
 echo " ======================= "
 echo " "
-echo -e " ${YELLOW}Please type exit and restart your TERMUX. ${NOCOLOR} "
+echo -e " ${YELLOW}silahkan ketik exit dan jalankan TERMUX anda ${NOCOLOR}"
 echo " "
-echo -e " Then type ${LIGHTGREEN}indopak ${NOCOLOR}(all lowercase)."
+echo -e " kemudian mengetikan ${LIGHTGREEN}indopak ${NOCOLOR}(huruf kecil semua ) "
 exit
