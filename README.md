@@ -1,4 +1,4 @@
-# indopak
+# Indopak
 Indopak
 ## Installing
 1. Install Termux from PlayStore,
