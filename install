@@ -1,4 +1,4 @@
-down=$EXTERNAL_STORAGE/Download
+down=$EXTERNAL_STORAGE/Download/pak
 dpak=$EXTERNAL_STORAGE/Download
 quickbms=$PREFIX/share/quickbms
 quickbms_dir=$PREFIX/share/quickbms
