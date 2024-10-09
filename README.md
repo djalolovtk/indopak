@@ -1,5 +1,5 @@
 # indopak
-Indopak is a tool created to modify the PUBG Mobile PAK file. This tool is still in the process of being developed and unstable, however, this tool can extract pak files and the results can be read by a text editor.
+Indopak
 ## Installing
 1. Install Termux from PlayStore,
 2. Open the Termux App and wait for the installation process,
