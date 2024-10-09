@@ -33,7 +33,7 @@ yes | cp -rf indopak $txz
 cd $down
 if [[ -d "pak" ]]
 then
-mkdir $dpak &>/dev/null
+mkdir $down &>/dev/null
 fi
 
 function install {
