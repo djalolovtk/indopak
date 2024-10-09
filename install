@@ -1,5 +1,5 @@
 down=$EXTERNAL_STORAGE/Download
-dpak=$EXTERNAL_STORAGE/Download/pak
+dpak=$EXTERNAL_STORAGE/Download
 quickbms=$PREFIX/share/quickbms
 quickbms_dir=$PREFIX/share/quickbms
 tx=$HOME/indopak
@@ -31,9 +31,10 @@ chmod +x indopak
 yes | cp -rf indopak $txz
 
 cd $down
+cd $dpak
 if [[ -d "pak" ]]
 then
-mkdir $down &>/dev/null
+mkdir $dpak &>/dev/null
 fi
 
 function install {
