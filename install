@@ -1,5 +1,5 @@
 down=$EXTERNAL_STORAGE/Download
-dpak=$EXTERNAL_STORAGE/Download/pak
+dpak=$EXTERNAL_STORAGE/Download
 quickbms=$PREFIX/share/quickbms
 quickbms_dir=$PREFIX/share/quickbms
 tx=$HOME/indopak
@@ -23,13 +23,8 @@ if [[ ! -d "$tx/output" ]]
 then
 mkdir $tx/output &>/dev/null
 mkdir $tx/etc &>/dev/null
-mkdir $tx/Logs &>/dev/null
 chmod +x pubg.bms 
 mv pubg.bms $tx/etc
-chmod +x FileUseTime.txt
-mv FileUseTime.txt $tx/Logs
-chmod +x ShadowTrackerExtra.log
-mv ShadowTrackerExtra.log $tx/Logs
 fi
 cd $tx
 chmod +x indopak
